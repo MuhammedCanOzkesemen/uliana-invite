@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Запрошення</title>
+  <style>
+    :root{
+      --bg0:#070a12;
+      --bg1:#0b0f1a;
+      --card: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.16);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --muted2: rgba(255,255,255,.55);
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --shadow2: 0 10px 28px rgba(0,0,0,.38);
+      --r: 26px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 10% 15%, rgba(59,130,246,.22), transparent 60%),
+        radial-gradient(900px 700px at 85% 10%, rgba(16,185,129,.18), transparent 60%),
+        radial-gradient(1000px 900px at 50% 90%, rgba(236,72,153,.12), transparent 60%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      overflow-x:hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      touch-action: manipulation;
+    }
+
+    .wrap{
+      min-height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px 14px 28px;
+      padding-bottom: calc(28px + env(safe-area-inset-bottom));
+      padding-top: calc(18px + env(safe-area-inset-top));
+    }
+
+    .shell{ width:min(480px, 96vw); position:relative; }
+
+    .topGlow{
+      position:absolute;
+      inset:-40px -30px auto -30px;
+      height:180px;
+      background: radial-gradient(closest-side, rgba(255,255,255,.12), transparent);
+      filter: blur(12px);
+      pointer-events:none;
+      opacity:.65;
+    }
+
+    .card{
+      position:relative;
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border:1px solid var(--stroke);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      padding:18px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .card:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(650px 260px at 15% 0%, rgba(56,189,248,.18), transparent 60%),
+        radial-gradient(550px 240px at 85% 15%, rgba(34,197,94,.14), transparent 58%),
+        radial-gradient(520px 260px at 55% 95%, rgba(244,114,182,.12), transparent 60%);
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    .content{position:relative; z-index:1}
+
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow2);
+      user-select:none;
+    }
+
+    .spark{
+      width:10px; height:10px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.35));
+      box-shadow:
+        0 0 0 4px rgba(255,255,255,.05),
+        0 0 18px rgba(255,255,255,.32);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.9}
+      50%{transform:scale(1.25); opacity:1}
+    }
+
+    h1{
+      margin:14px 0 8px;
+      font-size: 28px;
+      letter-spacing: -0.02em;
+      line-height:1.15;
+    }
+
+    p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.45;
+      font-size: 15.5px;
+    }
+
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+
+    .miniRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+
+    .mini{
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding:12px 12px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    }
+
+    .mini .k{
+      color:var(--muted2);
+      font-size: 12px;
+      letter-spacing:.02em;
+      margin-bottom:6px;
+      user-select:none;
+    }
+    .mini .v{
+      font-size: 15px;
+      color: rgba(255,255,255,.9);
+      font-weight: 650;
+      letter-spacing:-0.01em;
+    }
+
+    .weather{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+
+    .sun{
+      width:44px; height:44px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,.12));
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow: 0 18px 40px rgba(0,0,0,.32);
+      position:relative;
+      overflow:hidden;
+      flex: 0 0 auto;
+    }
+    .sun:before{
+      content:"";
+      position:absolute;
+      width:26px; height:26px;
+      border-radius:50%;
+      left:9px; top:9px;
+      background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.18));
+      box-shadow: 0 0 22px rgba(255,255,255,.35);
+      animation: sunFloat 3.6s ease-in-out infinite;
+    }
+    .sun:after{
+      content:"";
+      position:absolute;
+      inset:-18px;
+      background:
+        conic-gradient(from 0deg, rgba(255,255,255,.0), rgba(255,255,255,.18), rgba(255,255,255,.0));
+      animation: spin 6.8s linear infinite;
+      opacity:.55;
+      filter: blur(.4px);
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes sunFloat{
+      0%,100%{transform:translateY(0) scale(1)}
+      50%{transform:translateY(-2px) scale(1.04)}
+    }
+
+    .ctaArea{
+      margin-top:14px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      padding:14px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .ctaArea:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(700px 260px at 20% 0%, rgba(34,197,94,.14), transparent 60%);
+      opacity:.8;
+      pointer-events:none;
+    }
+
+    .ctaTitle{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .ctaTitle .left{display:flex; flex-direction:column; gap:4px;}
+    .ctaTitle .t1{font-weight:800; font-size:16px; letter-spacing:-0.01em;}
+    .ctaTitle .t2{color:var(--muted2); font-size:12.5px; line-height:1.25;}
+
+    .btnRow{
+      position:relative;
+      z-index:2;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:flex-start;
+      min-height:64px;
+    }
+
+    button{
+      border:0;
+      font: inherit;
+      color:inherit;
+      padding: 12px 14px;
+      border-radius: 18px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s ease, filter .18s ease;
+      will-change: transform;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-width: 150px;
+      box-shadow: 0 14px 28px rgba(0,0,0,.35);
+    }
+
+    .yesBtn{
+      background: linear-gradient(180deg, rgba(52,211,153,1), rgba(16,185,129,1));
+      color: #062416;
+      font-weight: 900;
+      letter-spacing: .02em;
+      position:relative;
+      z-index:3;
+    }
+    .yesBtn:active{transform: scale(.98)}
+    .yesBtn:hover{filter: brightness(1.03)}
+
+    /* IMPORTANT: No button is NOT absolute anymore. It will NOT auto-move.
+       We move it only on click using JS with translate, inside the btnRow bounds. */
+    .noBtn{
+      background: linear-gradient(180deg, rgba(148,163,184,1), rgba(100,116,139,1));
+      color: #0b1220;
+      font-weight: 850;
+      letter-spacing: .01em;
+      position:relative;   /* <-- fixed */
+      z-index:2;
+      transform: translate3d(0,0,0);
+      min-width: 150px;
+    }
+    .noBtn:active{transform: scale(.98)}
+
+    .tools{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+    }
+
+    .tool{
+      text-decoration:none;
+      color: rgba(255,255,255,.9);
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      padding:10px 12px;
+      border-radius: 16px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.28);
+      transition: transform .12s ease, background .18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tool:active{transform: scale(.98)}
+    .tool:hover{background: rgba(255,255,255,.10)}
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: rgba(255,255,255,.82);
+      box-shadow: 0 0 0 4px rgba(255,255,255,.06);
+      opacity:.9;
+    }
+
+    .footerNote{
+      margin-top:12px;
+      color: rgba(255,255,255,.58);
+      font-size: 12.5px;
+      line-height:1.35;
+    }
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+      background:
+        radial-gradient(1100px 800px at 20% 15%, rgba(34,197,94,.18), transparent 60%),
+        radial-gradient(900px 700px at 80% 20%, rgba(59,130,246,.22), transparent 60%),
+        radial-gradient(1000px 900px at 50% 95%, rgba(244,114,182,.16), transparent 60%),
+        rgba(0,0,0,.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index:999;
+    }
+
+    .celebrate{
+      width:min(520px, 96vw);
+      background: rgba(255,255,255,.09);
+      border:1px solid rgba(255,255,255,.16);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      overflow:hidden;
+      position:relative;
+    }
+    .celebrate:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(650px 280px at 12% 0%, rgba(255,255,255,.12), transparent 60%),
+        radial-gradient(520px 240px at 88% 10%, rgba(34,197,94,.16), transparent 60%),
+        radial-gradient(650px 340px at 50% 100%, rgba(59,130,246,.16), transparent 62%);
+      pointer-events:none;
+      opacity:.95;
+    }
+
+    .celebrate .inner{position:relative; z-index:1}
+
+    .big{
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing:-0.02em;
+      margin: 8px 0 6px;
+      line-height:1.15;
+    }
+    .sub{
+      color: rgba(255,255,255,.75);
+      margin:0 0 12px;
+      line-height:1.45;
+      font-size: 15.2px;
+    }
+
+    .pillRow{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px;}
+    .pill{
+      padding:10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.9);
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      box-shadow: 0 10px 22px rgba(0,0,0,.26);
+    }
+
+    .closeBtn{
+      margin-top: 14px;
+      width:100%;
+      min-width: unset;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
+      color: rgba(255,255,255,.92);
+      font-weight: 850;
+    }
+
+    .confetti{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index: 1000;
+      display:none;
+    }
+    .conf{
+      position:absolute;
+      width: 10px;
+      height: 16px;
+      border-radius: 6px;
+      opacity:.92;
+      transform: translate3d(0,0,0);
+      animation: fall linear forwards;
+    }
+    @keyframes fall{
+      to{
+        transform: translate3d(var(--dx), 110vh, 0) rotate(var(--rot));
+        opacity:.92;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .spark, .sun:before, .sun:after{animation:none !important}
+      button, .tool{transition:none !important}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="shell">
+      <div class="topGlow"></div>
+
+      <div class="card" role="region" aria-label="Запрошення">
+        <div class="content">
+          <div class="badge" aria-hidden="true">
+            <span class="spark"></span>
+            <span style="color:rgba(255,255,255,.84); font-weight:780; font-size:13px; letter-spacing:.01em;">
+              Домовимось остаточно
+            </span>
+          </div>
+
+          <h1>Понеділок · 19:00</h1>
+          <p>
+            Ми це вже обговорювали. Я просто фіксую місце й час.
+          </p>
+
+          <div class="grid">
+            <div class="miniRow">
+              <div class="mini">
+                <div class="k">Час</div>
+                <div class="v" id="whenText">Понеділок · 19:00</div>
+              </div>
+              <div class="mini">
+                <div class="k">Місце</div>
+                <div class="v" id="whereText">Taksim Restaurant</div>
+              </div>
+            </div>
+
+            <div class="mini">
+              <div class="weather">
+                <div>
+                  <div class="k">Погода (пн)</div>
+                  <div class="v" id="weatherText">11°C · сонячно</div>
+                </div>
+                <div class="sun" aria-hidden="true"></div>
+              </div>
+            </div>
+
+            <div class="ctaArea" id="ctaArea">
+              <div class="ctaTitle">
+                <div class="left">
+                  <div class="t1">Підтверджуємо?</div>
+                  <div class="t2">Ти зараз реально зайнята — саме тому нормальна вечеря тобі потрібна.</div>
+                </div>
+              </div>
+
+              <div class="btnRow" id="btnRow">
+                <button class="yesBtn" id="yesBtn" type="button">Так ✅</button>
+                <button class="noBtn" id="noBtn" type="button" aria-label="Ні">Ні</button>
+              </div>
+
+              <div class="tools">
+                <a class="tool" id="mapBtn" href="#" target="_blank" rel="noopener">
+                  <span class="dot"></span><span>Відкрити карту</span>
+                </a>
+                <a class="tool" id="calBtn" href="#" download="invite.ics">
+                  <span class="dot"></span><span>Додати в календар</span>
+                </a>
+              </div>
+
+              <div class="footerNote">
+                * «Ні» тут трохи вперте 🙂
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="celebrate" role="dialog" aria-modal="true" aria-label="Підтверджено">
+      <div class="inner">
+        <div class="badge" style="margin-bottom:10px;">
+          <span class="spark"></span>
+          <span style="font-weight:820; font-size:13px; color:rgba(255,255,255,.86)">Готово</span>
+        </div>
+
+        <div class="big">Супер. Тоді в понеділок о 19:00 ✨</div>
+        <p class="sub" id="confirmText">
+          11°C і сонячно. Просто прийди — решта на мені.
+        </p>
+
+        <div class="pillRow">
+          <div class="pill"><span class="dot"></span><span id="pillWhen">Понеділок · 19:00</span></div>
+          <div class="pill"><span class="dot"></span><span>Taksim Restaurant</span></div>
+        </div>
+
+        <button class="closeBtn" id="closeBtn" type="button">Ок</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+    (() => {
+      const TZ = "Europe/Warsaw";
+      const PLACE = "Taksim Restaurant";
+      const CITY = "Warsaw";
+
+      const elWhen = document.getElementById("whenText");
+      const elPillWhen = document.getElementById("pillWhen");
+      const elWhere = document.getElementById("whereText");
+      const mapBtn = document.getElementById("mapBtn");
+      const calBtn = document.getElementById("calBtn");
+
+      const btnRow = document.getElementById("btnRow");
+      const yesBtn = document.getElementById("yesBtn");
+      const noBtn = document.getElementById("noBtn");
+
+      const overlay = document.getElementById("overlay");
+      const closeBtn = document.getElementById("closeBtn");
+      const confetti = document.getElementById("confetti");
+
+      elWhere.textContent = PLACE;
+
+      // ---- Next Monday 19:00 Warsaw (for ICS correctness) ----
+      function nowInWarsaw() {
+        const now = new Date();
+        const fmt = new Intl.DateTimeFormat("en-US", {
+          timeZone: TZ,
+          year: "numeric", month: "2-digit", day: "2-digit",
+          hour: "2-digit", minute: "2-digit", second: "2-digit",
+          hour12: false
+        });
+        const parts = Object.fromEntries(fmt.formatToParts(now).map(p => [p.type, p.value]));
+        return new Date(Date.UTC(
+          Number(parts.year),
+          Number(parts.month) - 1,
+          Number(parts.day),
+          Number(parts.hour),
+          Number(parts.minute),
+          Number(parts.second)
+        ));
+      }
+
+      function getNextMondayWarsawAt19() {
+        const wNow = nowInWarsaw();
+        const day = wNow.getUTCDay();
+        const hour = wNow.getUTCHours();
+        const minute = wNow.getUTCMinutes();
+
+        let addDays = (1 - day + 7) % 7;
+        const isMonday = day === 1;
+        const isBefore1900 = (hour < 19) || (hour === 19 && minute === 0);
+        if (isMonday && !isBefore1900) addDays = 7;
+        if (!isMonday && addDays === 0) addDays = 7;
+
+        const target = new Date(wNow);
+        target.setUTCDate(target.getUTCDate() + addDays);
+        target.setUTCHours(19, 0, 0, 0);
+        return target;
+      }
+
+      const eventStart = getNextMondayWarsawAt19();
+
+      function pad(n){ return String(n).padStart(2,"0"); }
+      function toICSLocalWallclock(d){
+        const y=d.getUTCFullYear();
+        const m=pad(d.getUTCMonth()+1);
+        const da=pad(d.getUTCDate());
+        const hh=pad(d.getUTCHours());
+        const mm=pad(d.getUTCMinutes());
+        const ss=pad(d.getUTCSeconds());
+        return `${y}${m}${da}T${hh}${mm}${ss}`;
+      }
+
+      const dtStart = toICSLocalWallclock(eventStart);
+      const eventEnd = new Date(eventStart);
+      eventEnd.setUTCHours(eventEnd.getUTCHours() + 2);
+      const dtEnd = toICSLocalWallclock(eventEnd);
+
+      const uid = `${Date.now()}-${Math.random().toString(16).slice(2)}@invite`;
+      const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Invite//UA//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${dtStart}
+DTSTART;TZID=${TZ}:${dtStart}
+DTEND;TZID=${TZ}:${dtEnd}
+SUMMARY:Вечеря — ${PLACE}
+LOCATION:${PLACE}, ${CITY}
+DESCRIPTION:Понеділок о 19:00. Побачимось.
+END:VEVENT
+END:VCALENDAR`;
+
+      const icsBlob = new Blob([ics.replace(/\n/g, "\r\n")], { type: "text/calendar;charset=utf-8" });
+      const icsUrl = URL.createObjectURL(icsBlob);
+      calBtn.href = icsUrl;
+
+      // Map link
+      const mapQuery = encodeURIComponent(`${PLACE} ${CITY}`);
+      mapBtn.href = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+
+      // ---- NO button: only moves when clicked; never auto-moves; never overlaps YES; never leaves row ----
+      const noTexts = [
+        "Ні? 🙂",
+        "Точно?",
+        "Серйозно?",
+        "Останнє рішення?",
+        "Давай без цього 😄",
+        "А якщо просто на годинку?",
+        "Ти впевнена?",
+        "Ні-ні? 😅",
+        "Ну хоча б спробуємо?",
+        "Не жартуй 😌",
+        "Може «так»? 😉",
+        "Ок… але ти передумаєш 😄",
+        "Ще раз: точно «ні»?",
+        "11°C і сонце — ідеально ж 😄"
+      ];
+      let noIndex = 0;
+
+      function clamp(v,a,b){ return Math.max(a, Math.min(b,v)); }
+
+      function pickSafeOffset() {
+        const row = btnRow.getBoundingClientRect();
+        const yes = yesBtn.getBoundingClientRect();
+        const no = noBtn.getBoundingClientRect();
+
+        // offsets are relative to current layout position of the NO button (normal flow)
+        // We'll move it within the row by translating it, but keep it inside bounds.
+        const padX = 8;
+        const padY = 6;
+
+        const maxRight = row.right - no.right - padX;  // how far it can go right
+        const maxLeft  = row.left  - no.left  + padX;  // how far it can go left  (negative translate)
+        const maxDown  = row.bottom - no.bottom - padY;
+        const maxUp    = row.top    - no.top    + padY;
+
+        // Exclusion zone near YES (to avoid overlap)
+        const yesCenter = { x: yes.left + yes.width/2, y: yes.top + yes.height/2 };
+
+        let tx=0, ty=0, tries=0;
+        const exclusionR = 110;
+
+        do{
+          tx = (Math.random() * (maxRight - maxLeft) + maxLeft);
+          ty = (Math.random() * (maxDown - maxUp) + maxUp);
+
+          const noCenter = {
+            x: (no.left + tx) + no.width/2,
+            y: (no.top + ty) + no.height/2
+          };
+
+          const dist = Math.hypot(noCenter.x - yesCenter.x, noCenter.y - yesCenter.y);
+          tries++;
+          if(dist > exclusionR) break;
+        } while(tries < 30);
+
+        tx = clamp(tx, maxLeft, maxRight);
+        ty = clamp(ty, maxUp, maxDown);
+
+        return { tx, ty };
+      }
+
+      function moveNoFancy() {
+        const { tx, ty } = pickSafeOffset();
+        noBtn.style.transition = "transform .22s ease";
+        noBtn.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
+        noBtn.animate(
+          [
+            { transform: `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0) scale(1)` },
+            { transform: `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0) scale(1.03)` },
+            { transform: `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0) scale(1)` }
+          ],
+          { duration: 220, easing: "ease-out" }
+        );
+      }
+
+      noBtn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        noIndex = (noIndex + 1) % noTexts.length;
+        noBtn.textContent = noTexts[noIndex];
+        moveNoFancy();
+      }, { passive:false });
+
+      window.addEventListener("resize", () => {
+        // reset to visible safe state
+        noBtn.style.transition = "none";
+        noBtn.style.transform = "translate3d(0,0,0)";
+      }, { passive:true });
+
+      // ---- YES: celebration ----
+      function makeConfettiPiece(){
+        const d = document.createElement("div");
+        d.className = "conf";
+        const startX = Math.random() * 100;
+        const dx = (Math.random() * 30 - 15) + "vw";
+        const rot = (Math.random() * 720 - 360) + "deg";
+        const dur = (Math.random() * 900 + 1100) + "ms";
+        const delay = (Math.random() * 140) + "ms";
+        const colors = [
+          "rgba(255,255,255,.90)",
+          "rgba(34,197,94,.85)",
+          "rgba(59,130,246,.85)",
+          "rgba(244,114,182,.80)",
+          "rgba(250,204,21,.82)"
+        ];
+        d.style.left = startX + "vw";
+        d.style.top = (-10 - Math.random()*20) + "vh";
+        d.style.background = colors[(Math.random() * colors.length) | 0];
+        d.style.setProperty("--dx", dx);
+        d.style.setProperty("--rot", rot);
+        d.style.animationDuration = dur;
+        d.style.animationDelay = delay;
+        d.style.width = (8 + Math.random()*8) + "px";
+        d.style.height = (10 + Math.random()*14) + "px";
+        return d;
+      }
+
+      function burstConfetti(){
+        confetti.innerHTML = "";
+        confetti.style.display = "block";
+        for(let i=0;i<40;i++) confetti.appendChild(makeConfettiPiece());
+        setTimeout(() => {
+          confetti.style.display = "none";
+          confetti.innerHTML = "";
+        }, 2100);
+      }
+
+      function openOverlay(){
+        overlay.style.display = "flex";
+        overlay.setAttribute("aria-hidden", "false");
+        burstConfetti();
+        const box = overlay.querySelector(".celebrate");
+        box.animate(
+          [{ transform: "translateY(10px) scale(.98)", opacity: 0 },
+           { transform: "translateY(0) scale(1)", opacity: 1 }],
+          { duration: 260, easing: "ease-out" }
+        );
+      }
+
+      function closeOverlay(){
+        overlay.style.display = "none";
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
+      yesBtn.addEventListener("click", () => {
+        noBtn.style.display = "none";
+        openOverlay();
+      }, { passive:true });
+
+      closeBtn.addEventListener("click", () => closeOverlay(), { passive:true });
+      overlay.addEventListener("click", (e) => { if(e.target === overlay) closeOverlay(); }, { passive:true });
+      window.addEventListener("keydown", (e) => { if(e.key === "Escape") closeOverlay(); });
+
+      window.addEventListener("beforeunload", () => {
+        try{ URL.revokeObjectURL(icsUrl); }catch(_){}
+      });
+    })();
+  </script>
+</body>
+</html>
